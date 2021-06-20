@@ -1,0 +1,145 @@
+#compdef lacework
+#autoload
+
+#author: fred.breton@lacework.net
+
+local IFS=$'\n'
+
+local curcontext="$curcontext" state line
+typeset -A opt_args
+
+_arguments -C \
+    '-p:flagp:->flagp' \
+    '--subaccount:suba:->suba' \
+    '1:command:->command' \
+    '2:arg1:->arg1' \
+    '3:arg2:->arg2' \
+    '4:arg3:->arg3' \
+    '5:arg4:->arg4'
+    
+local __lw_cmd=""
+local -i __index=${words[(I)-p]}
+local -i __indexsu=${words[(I)--subaccount]}
+local __flagpst="" __flagpv="" __suba="" __subav=""
+
+if ((__index > 0)); then
+    __flagpst="-p"
+    __flagpv=$words[__index+1]
+fi
+
+if ((__indexsu > 0)); then
+    __suba="--subaccount"
+    __subav=$words[__indexsu+1]
+fi
+
+case $state in
+    flagp)
+        __lw_cmd=(
+            $(lacework configure list | awk 'NR>2 { if ($1==">" && NF==7) print $2": account=",$3,",subaccount=",$4; else if ($1==">") print $2": account=",$3;
+                    else if (NF==6) print $1": account=",$2,",subaccount=",$3; else print $1": account=",$2}' )
+            )
+    ;;
+    
+    suba)
+        __lw_cmd=(
+            $(lacework --noninteractive $__flagpst $__flagpv account list | awk '/ACCOUNTS/{f=1} /--subaccount/{f=0} f' | awk 'NR>2 { print $1 }')
+        )
+    ;;
+    
+    command)
+        __lw_cmd=(
+            $(lacework -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {f1=$1;$1="";print f1":",$0}')
+        )
+    ;;
+
+    arg1)
+        __lw_cmd=(
+            $(lacework $line[1] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {f1=$1;$1="";print f1":",$0}')
+        )
+    ;;
+    
+    arg2)
+        case $line[2] in
+            show)
+                [ $line[1] = "integration" ] && __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav integration list | awk 'NR>2 && NF==5 {print $1":",$2," | ",$3," | ",$4," | ",$5}')
+                    )
+                [ $line[1] = "event" ] && __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav event list --severity critical --severity high  --severity medium --days 1 | awk 'NR>2 {print $1":",$2," | ",$3," | ",$4," | ",$5}')
+                    )
+                [ $line[1] = "configure" ] && __lw_cmd=(
+                    $(lacework $line[1] $line[2] -h | awk '/The available configuration keys are:/{f=1} /To show the configuration/{f=0} f' | awk 'NR>1 && $1!="" {print $2}')
+                )
+               # __lw_cmd=($(echo "flagpst: X$__flagpst\nflagpv: X$__flagpv\nsuba: X$__suba\n " | awk '{print $1":",$2}'))
+            ;;
+            
+            open)
+                [ $line[1] = "event" ] && __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav event list --severity critical --severity high  --severity medium --days 1 | awk 'NR>2 {print $1":",$2," | ",$3," | ",$4," | ",$5}')
+                    )
+            ;;
+        
+            *)
+                __lw_cmd=(
+                    $(lacework $line[1] $line[2] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {f1=$1;$1="";print f1":",$0}')
+                )
+            ;;
+        esac
+    ;;
+    
+    arg3)
+        case $line[3] in
+            show)
+                [ $line[2] = "token" ] && [ $line[1] = "agent" ] && __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav agent token list | awk 'NR>2 && NF==3 { print $1":",$2," | ",$3 }' )
+                    )
+            ;;
+            
+            update)
+                [ $line[2] = "token" ] && [ $line[1] = "agent" ] && __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav agent token list | awk 'NR>2 && NF==3 { print $1":",$2," | ",$3 }' )
+                    )
+            ;;
+            
+            get-report|run-assessment|list-subscriptions)
+                [ $line[1] = "compliance" ] && [ $line[2] = "aws" ] && __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav compliance aws list-accounts | awk 'NR>2 { print $1 }' )
+                    )
+                [ $line[1] = "compliance" ] && [ $line[2] = "azure" ] && __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav compliance azure list-tenants | awk 'NR>2 { print $1 }' )
+                    )
+                [ $__lw_cmd[1] = "Get" ] && __lw_cmd=""
+            ;;
+            
+            list-hosts)
+                [ $line[1] = "vulnerability" ] && [ $line[2] = "host" ] && __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav vulnerability host list-cves --active --severity critical --severity high | awk 'NR>2 && NF>6 { if (NF==10) print $1":",$2," | ",$4," | ",$7; else print $1":",$2," | ",$4," | ",$6 }')
+                )
+            ;;
+            
+            *)
+                __lw_cmd=(
+                    $(lacework $line[1] $line[2] $line[3] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {f1=$1;$1="";print f1":",$0}')
+                )
+            ;;
+            
+        esac
+    ;;
+    
+    arg4)
+        if [ $line[2] = "azure" ] && [ $line[3] != "list-subscriptions" ] ; then
+            __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav compliance azure list-subscriptions $line[4] | awk 'NR>2 { print $1":",$2 }' )
+                )
+        else
+            __lw_cmd=(
+                    $(lacework $line[1] $line[2] $line[3] $line[4] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {f1=$1;$1="";print f1":",$0}')
+                )
+        fi
+    ;;
+esac
+
+_describe -t commands 'lacework command' __lw_cmd
+
+return 0
+
