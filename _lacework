@@ -33,6 +33,7 @@ if ((__indexsu > 0)); then
 fi
 
 case $state in
+    # Completion for -p to switch between profiles configured at ~/.lacework.toml
     flagp)
         __lw_cmd=(
             $(lacework configure list | awk 'NR>2 { if ($1==">" && NF==7) print $2": account=",$3,",subaccount=",$4; else if ($1==">") print $2": account=",$3;
@@ -41,18 +42,22 @@ case $state in
     ;;
     
     suba)
+    # Completion for --subaccount 
         __lw_cmd=(
             $(lacework --noninteractive $__flagpst $__flagpv account list | awk '/ACCOUNTS/{f=1} /--subaccount/{f=0} f' | awk 'NR>2 { print $1 }')
         )
     ;;
     
     command)
+    # Completion for the first argument
         __lw_cmd=(
             $(lacework -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {f1=$1;$1="";print f1":",$0}')
         )
     ;;
 
     arg1)
+    # Completion for the second argument
+        [ $line[1] = "api" ] && __lw_cmd=('get' 'post' 'patch' 'delete') || 
         __lw_cmd=(
             $(lacework $line[1] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {f1=$1;$1="";print f1":",$0}')
         )
@@ -60,7 +65,8 @@ case $state in
     
     arg2)
         case $line[2] in
-            show)
+        #Completion for the 2nd argument of integration, event and configure 
+            show|delete)
                 [ $line[1] = "integration" ] && __lw_cmd=(
                     $(lacework $__flagpst $__flagpv $__suba $__subav integration list | awk 'NR>2 && NF==5 {print $1":",$2," | ",$3," | ",$4," | ",$5}')
                     )
@@ -70,7 +76,6 @@ case $state in
                 [ $line[1] = "configure" ] && __lw_cmd=(
                     $(lacework $line[1] $line[2] -h | awk '/The available configuration keys are:/{f=1} /To show the configuration/{f=0} f' | awk 'NR>1 && $1!="" {print $2}')
                 )
-               # __lw_cmd=($(echo "flagpst: X$__flagpst\nflagpv: X$__flagpv\nsuba: X$__suba\n " | awk '{print $1":",$2}'))
             ;;
             
             open)
@@ -78,10 +83,10 @@ case $state in
                     $(lacework $__flagpst $__flagpv $__suba $__subav event list --severity critical --severity high  --severity medium --days 1 | awk 'NR>2 {print $1":",$2," | ",$3," | ",$4," | ",$5}')
                     )
             ;;
-        
+        #Completion for the 2nd argument of other command than integration, event and configure
             *)
                 __lw_cmd=(
-                    $(lacework $line[1] $line[2] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {f1=$1;$1="";print f1":",$0}')
+                    $(lacework $line[1] $line[2] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {gsub(/:/,"\\:",$1); f1=$1;$1="";print f1":",$0}')
                 )
             ;;
         esac
@@ -89,37 +94,50 @@ case $state in
     
     arg3)
         case $line[3] in
-            show)
+        #Completion for lacework agent token show|update
+            show|update)
                 [ $line[2] = "token" ] && [ $line[1] = "agent" ] && __lw_cmd=(
-                    $(lacework $__flagpst $__flagpv $__suba $__subav agent token list | awk 'NR>2 && NF==3 { print $1":",$2," | ",$3 }' )
+                    $(lacework $__flagpst $__flagpv $__suba $__subav agent token list | awk 'NR>2 && NF==3 { gsub(/:/,"\\:",$1); print $1":",$2," | ",$3 }' )
                     )
             ;;
-            
-            update)
-                [ $line[2] = "token" ] && [ $line[1] = "agent" ] && __lw_cmd=(
-                    $(lacework $__flagpst $__flagpv $__suba $__subav agent token list | awk 'NR>2 && NF==3 { print $1":",$2," | ",$3 }' )
-                    )
-            ;;
-            
-            get-report|run-assessment|list-subscriptions)
+        #Completion for lacework compliance aws|azure|google -- google one needs to be improved
+            get-report|run-assessment|list-subscriptions|list-projects)
                 [ $line[1] = "compliance" ] && [ $line[2] = "aws" ] && __lw_cmd=(
-                    $(lacework $__flagpst $__flagpv $__suba $__subav compliance aws list-accounts | awk 'NR>2 { print $1 }' )
+                    $(lacework $__flagpst $__flagpv $__suba $__subav compliance aws list-accounts | awk 'NR>2 { gsub(/:/,"\\:",$1); print $1 }' )
                     )
                 [ $line[1] = "compliance" ] && [ $line[2] = "azure" ] && __lw_cmd=(
-                    $(lacework $__flagpst $__flagpv $__suba $__subav compliance azure list-tenants | awk 'NR>2 { print $1 }' )
+                    $(lacework $__flagpst $__flagpv $__suba $__subav compliance azure list-tenants | awk 'NR>2 { gsub(/:/,"\\:",$1); print $1 }' )
                     )
+                [ $line[1] = "compliance" ] && [ $line[2] = "google" ] && __lw_cmd="n/a"
+                
                 [ $__lw_cmd[1] = "Get" ] && __lw_cmd=""
             ;;
             
+        #Completion for lacework vulnerability host list-hosts
             list-hosts)
                 [ $line[1] = "vulnerability" ] && [ $line[2] = "host" ] && __lw_cmd=(
-                    $(lacework $__flagpst $__flagpv $__suba $__subav vulnerability host list-cves --active --severity critical --severity high | awk 'NR>2 && NF>6 { if (NF==10) print $1":",$2," | ",$4," | ",$7; else print $1":",$2," | ",$4," | ",$6 }')
+                    $(lacework $__flagpst $__flagpv $__suba $__subav vulnerability host list-cves --active --severity critical --severity high | awk 'NR>2 && NF>6 { gsub(/:/,"\\:",$1); if (NF==10) print $1":",$2," | ",$4," | ",$7; else print $1":",$2," | ",$4," | ",$6 }')
                 )
             ;;
+        
+        #Completion for lacework vulnerability container scan
+            scan)
+                [ $line[1] = "vulnerability" ] && [ $line[2] = "container" ] && __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav vulnerability container list-registries | awk 'NR>2 { gsub(/:/,"\\:",$1); print $1 }' )
+                )  
+            ;;
             
+        #Completion for lacework vulnerability container show-assessment
+            show-assessment)
+                [ $line[1] = "vulnerability" ] && [ $line[2] = "container" ] && __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav vulnerability container list-assessments | awk '/Success/ {  gsub(/:/,"\\:",$NF); print $NF":",$2," | Last Scan ",$3 }' )
+                )
+            ;;
+        
+        #Completion for other 4th arguments
             *)
                 __lw_cmd=(
-                    $(lacework $line[1] $line[2] $line[3] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {f1=$1;$1="";print f1":",$0}')
+                    $(lacework $line[1] $line[2] $line[3] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {gsub(/:/,"\\:",$1);f1=$1;$1="";print f1":",$0}')
                 )
             ;;
             
@@ -129,13 +147,22 @@ case $state in
     arg4)
         if [ $line[2] = "azure" ] && [ $line[3] != "list-subscriptions" ] ; then
             __lw_cmd=(
-                    $(lacework $__flagpst $__flagpv $__suba $__subav compliance azure list-subscriptions $line[4] | awk 'NR>2 { print $1":",$2 }' )
+                    $(lacework $__flagpst $__flagpv $__suba $__subav compliance azure list-subscriptions $line[4] | awk 'NR>2 { gsub(/:/,"\\:",$1); print $1":",$2 }' )
+                )
+        elif [ $line[3] = "scan" ] && [ $line[1] = "vulnerability" ] && [ $line[2] = "container" ]; then
+            __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav vulnerability container list-assesments | grep $line[4] |awk '{ gsub(/:/,"\\:",$2); print $2 }' )
+                )
+        elif [ $line[2] = "google" ] && [ $line[3] != "list-projects" ] ; then
+            __lw_cmd=(
+                    $(lacework $__flagpst $__flagpv $__suba $__subav compliance google list-projects $line[4] | awk 'NR>2 { gsub(/:/,"\\:",$1); print $1":",$2 }' )
                 )
         else
             __lw_cmd=(
-                    $(lacework $line[1] $line[2] $line[3] $line[4] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {f1=$1;$1="";print f1":",$0}')
+                    $(lacework $line[1] $line[2] $line[3] $line[4] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {gsub(/:/,"\\:",$1);f1=$1;$1="";print f1":",$0}')
                 )
         fi
+        
     ;;
 esac
 
