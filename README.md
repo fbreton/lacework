@@ -9,7 +9,9 @@ To use the lacework completion with Zsh (without Oh My Zsh):
 To use the lacework completion with Oh My Zsh you need to:
   1. create directory ~/.oh-my-zsh/custom/plugins/lacework
   2. copy the file in _lacework in the directory ~/.oh-my-zsh/custom/plugins/lacework
-  3. edit your ~/.zshrc file, find the line starting by plugins to add lacework to the plugins list, you should at least have: `plugins=(lacemork)`
+  3. edit your ~/.zshrc file, find the line starting by plugins to add lacework to the plugins list, you should at least have: 
+
+    plugins=(... lacemork)
  
 This has been tested with cli version 0.9.1
 
