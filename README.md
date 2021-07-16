@@ -2,6 +2,9 @@
 This script is to be use with zsh and can be use with Oh My Zsh framework to get lacework command completion.
 Oh My Zsh is a delightful, open source, community-driven framework for managing your Zsh configuration that you can get from https://ohmyz.sh/
 
+
+You also need to have jq installed: https://github.com/stedolan/jq/wiki/Installation
+
 ## Instalation
 To use the lacework completion with Zsh (without Oh My Zsh):
   1. Just drop the file in one of your function folders that you can find looking in fpath: `echo $fpath`
