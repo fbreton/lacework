@@ -38,6 +38,7 @@ For some command the completion present only subset of possibilities:
         9240  9222                                      -- Type: ComplianceChanged, Start time: 2021-07-15T13:00:00Z                                        
         9609  9616  9624  9618  9606  9608  9617  9622  -- Type: NewViolations, Start time: 2021-07-16T13:00:00Z                                            
         9610  9615                                      -- Type: ComplianceChanged, Start time: 2021-07-16T13:00:00Z</pre>
+        
 
   2. `lacework vulnerability host list-host` present only the CVEs that are active and contains critical and high severities
 
@@ -55,5 +56,7 @@ For some command the completion present only subset of possibilities:
            CVE-2020-12049                                   -- OS: rhel:7, centos:7; #Host: 3; #Critical: null; #High: 6                                       
            CVE-2020-25097                                   -- OS: rhel:7; #Host: 1; #Critical: null; #High: 4                                                 
            CVE-2021-25217                                   -- OS: rhel:7, rhel:6, centos:7; #Host: 4; #Critical: null; #High: 11</pre>
+           
+ ## To be done
+ Improve switch support.
 
- 3.
