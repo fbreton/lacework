@@ -24,7 +24,7 @@ Only the following flags support the completion:
   2. --subaccount to switch between account inside your organisation
 
 For some command the completion present only subset of possibilities:
-  1. `lacework event show | open` present only the event with severity Critical and High for the 7 last days
+  1. `lacework event show | open` present only the event with severity Critical or High for the 7 last days
 
         <pre>~ lacework event show`
         
@@ -40,7 +40,7 @@ For some command the completion present only subset of possibilities:
         9610  9615                                      -- Type: ComplianceChanged, Start time: 2021-07-16T13:00:00Z</pre>
         
 
-  2. `lacework vulnerability host list-host` present only the CVEs that are active and contains critical and high severities
+  2. `lacework vulnerability host list-host` present only the CVEs that are active and contains critical and/or high severities
 
       <pre>~ lacework vulnerability host list-hosts
            ALAS-2019-1258                                   -- OS: amzn:2018.03; #Host: 1; #Critical: null; #High: 4                                           
