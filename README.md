@@ -27,7 +27,7 @@ For some command the completion present only subset of possibilities:
   1. `lacework event show | open` present only the event with severity Critical and High for the 7 last days
 
         `~ lacework event show`
-     
+        `
         8777  8773  8781  8775  8779                    -- Type: NewViolations, Start time: 2021-07-13T13:00:00Z                                            
         8999                                            -- Type: UserLaunchedNewBinary, Start time: 2021-07-14T09:00:00Z                                    
         9030                                            -- Type: UserLaunchedNewBinary, Start time: 2021-07-14T13:00:00Z                                    
@@ -37,7 +37,7 @@ For some command the completion present only subset of possibilities:
         9236  9225  9230  9229  9235  9223              -- Type: NewViolations, Start time: 2021-07-15T13:00:00Z                                            
         9240  9222                                      -- Type: ComplianceChanged, Start time: 2021-07-15T13:00:00Z                                        
         9609  9616  9624  9618  9606  9608  9617  9622  -- Type: NewViolations, Start time: 2021-07-16T13:00:00Z                                            
-        9610  9615                                      -- Type: ComplianceChanged, Start time: 2021-07-16T13:00:00Z
+        9610  9615                                      -- Type: ComplianceChanged, Start time: 2021-07-16T13:00:00Z`
 
   2. `lacework vulnerability host list-host` present only the CVEs that are active and contains critical and high severities
 
