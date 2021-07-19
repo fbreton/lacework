@@ -27,8 +27,8 @@ For some command the completion present only subset of possibilities:
   1. `lacework event show | open` present only the event with severity Critical and High for the 7 last days
 
         `~ lacework event show`
-        `
-        8777  8773  8781  8775  8779                    -- Type: NewViolations, Start time: 2021-07-13T13:00:00Z                                            
+        
+        `8777  8773  8781  8775  8779                    -- Type: NewViolations, Start time: 2021-07-13T13:00:00Z                                            
         8999                                            -- Type: UserLaunchedNewBinary, Start time: 2021-07-14T09:00:00Z                                    
         9030                                            -- Type: UserLaunchedNewBinary, Start time: 2021-07-14T13:00:00Z                                    
         9046  9039  9048  9033  9035  9042  9045        -- Type: NewViolations, Start time: 2021-07-14T13:00:00Z                                            
