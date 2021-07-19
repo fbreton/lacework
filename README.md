@@ -28,7 +28,7 @@ For some command the completion present only subset of possibilities:
 
         <pre>~ lacework event show`
         
-        `8777  8773  8781  8775  8779                    -- Type: NewViolations, Start time: 2021-07-13T13:00:00Z                                            
+        8777  8773  8781  8775  8779                    -- Type: NewViolations, Start time: 2021-07-13T13:00:00Z                                            
         8999                                            -- Type: UserLaunchedNewBinary, Start time: 2021-07-14T09:00:00Z                                    
         9030                                            -- Type: UserLaunchedNewBinary, Start time: 2021-07-14T13:00:00Z                                    
         9046  9039  9048  9033  9035  9042  9045        -- Type: NewViolations, Start time: 2021-07-14T13:00:00Z                                            
@@ -41,19 +41,19 @@ For some command the completion present only subset of possibilities:
 
   2. `lacework vulnerability host list-host` present only the CVEs that are active and contains critical and high severities
 
-      `~ lacework vulnerability host list-hosts
-ALAS-2019-1258                                   -- OS: amzn:2018.03; #Host: 1; #Critical: null; #High: 4                                           
-ALAS2-2019-1258                                  -- OS: amzn:2; #Host: 1; #Critical: null; #High: 3                                                 
-ALAS2-2021-1654                                  -- OS: amzn:2, amzn:2; #Host: 6; #Critical: null; #High: 6                                         
-CVE-2017-8779                                    -- OS: rhel:6; #Host: 1; #Critical: null; #High: 3                                                 
-CVE-2018-1111                                    -- OS: centos:7, rhel:6; #Host: 2; #Critical: 8; #High: null                                       
-CVE-2018-16864   CVE-2018-16865  CVE-2018-15688  -- OS: centos:7; #Host: 1; #Critical: null; #High: 3                                               
-CVE-2018-5732                                    -- OS: rhel:6; #Host: 1; #Critical: null; #High: 2                                                 
-CVE-2019-12749                                   -- OS: centos:7, rhel:7; #Host: 3; #Critical: null; #High: 8                                       
-CVE-2019-17042   CVE-2019-17041                  -- OS: debian:10; #Host: 2; #Critical: null; #High: 1                                              
-CVE-2019-6454                                    -- OS: centos:7; #Host: 1; #Critical: null; #High: 6                                               
-CVE-2020-12049                                   -- OS: rhel:7, centos:7; #Host: 3; #Critical: null; #High: 6                                       
-CVE-2020-25097                                   -- OS: rhel:7; #Host: 1; #Critical: null; #High: 4                                                 
-CVE-2021-25217                                   -- OS: rhel:7, rhel:6, centos:7; #Host: 4; #Critical: null; #High: 11`
+      <pre>~ lacework vulnerability host list-hosts
+           ALAS-2019-1258                                   -- OS: amzn:2018.03; #Host: 1; #Critical: null; #High: 4                                           
+           ALAS2-2019-1258                                  -- OS: amzn:2; #Host: 1; #Critical: null; #High: 3                                                 
+           ALAS2-2021-1654                                  -- OS: amzn:2, amzn:2; #Host: 6; #Critical: null; #High: 6                                         
+           CVE-2017-8779                                    -- OS: rhel:6; #Host: 1; #Critical: null; #High: 3                                                 
+           CVE-2018-1111                                    -- OS: centos:7, rhel:6; #Host: 2; #Critical: 8; #High: null                                       
+           CVE-2018-16864   CVE-2018-16865  CVE-2018-15688  -- OS: centos:7; #Host: 1; #Critical: null; #High: 3                                               
+           CVE-2018-5732                                    -- OS: rhel:6; #Host: 1; #Critical: null; #High: 2                                                 
+           CVE-2019-12749                                   -- OS: centos:7, rhel:7; #Host: 3; #Critical: null; #High: 8                                       
+           CVE-2019-17042   CVE-2019-17041                  -- OS: debian:10; #Host: 2; #Critical: null; #High: 1                                              
+           CVE-2019-6454                                    -- OS: centos:7; #Host: 1; #Critical: null; #High: 6                                               
+           CVE-2020-12049                                   -- OS: rhel:7, centos:7; #Host: 3; #Critical: null; #High: 6                                       
+           CVE-2020-25097                                   -- OS: rhel:7; #Host: 1; #Critical: null; #High: 4                                                 
+           CVE-2021-25217                                   -- OS: rhel:7, rhel:6, centos:7; #Host: 4; #Critical: null; #High: 11</pre>
 
  3.
