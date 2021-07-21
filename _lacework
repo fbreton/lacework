@@ -15,7 +15,8 @@ _arguments -C \
     '2:arg1:->arg1' \
     '3:arg2:->arg2' \
     '4:arg3:->arg3' \
-    '5:arg4:->arg4'
+    '5:arg4:->arg4' \
+    '6:arg5:->arg5'
     
 local __lw_cmd=""
 local -i __index=${words[(I)-p]}
@@ -121,7 +122,7 @@ case $state in
         #Completion for lacework vulnerability container scan
             scan)
                 [ $line[1] = "vulnerability" ] && [ $line[2] = "container" ] && __lw_cmd=(
-                    $(lacework --noninteractive $__flagpst $__flagpv $__suba $__subav vulnerability container list-registries | awk 'NR>2 { gsub(/:/,"\\:",$1); print $1 }' )
+                    $(lacework --noninteractive $__flagpst $__flagpv $__suba $__subav vulnerability container list-assessments --json | jq -r '.[] | select(.image_scan_status == "Success") | .image_registry' )
                 )  
             ;;
             
@@ -149,7 +150,7 @@ case $state in
                 )
         elif [ $line[3] = "scan" ] && [ $line[1] = "vulnerability" ] && [ $line[2] = "container" ]; then
             __lw_cmd=(
-                    $(lacework --noninteractive $__flagpst $__flagpv $__suba $__subav vulnerability container list-assesments | grep $line[4] |awk '{ gsub(/:/,"\\:",$2); print $2 }' )
+                    $(lacework --noninteractive $__flagpst $__flagpv $__suba $__subav vulnerability container list-assessments --json | jq -r --arg reg $line[4] '.[] | select((.image_scan_status == "Success") and (.image_registry == $reg)) | .image_repo' )
                 )
         elif [ $line[2] = "google" ] && [ $line[3] != "list-projects" ] ; then
             __lw_cmd=(
@@ -159,8 +160,13 @@ case $state in
             __lw_cmd=(
                     $(lacework --noninteractive $line[1] $line[2] $line[3] $line[4] -h | awk '/Available Commands:/{f=1} /Flags/{f=0} f' | awk 'NR>1 && $1!="" {gsub(/:/,"\\:",$1);f1=$1;$1="";print f1":",$0}')
                 )
-        fi
-        
+        fi  
+    ;;
+    
+    arg5)
+        [ $line[3] = "scan" ] && [ $line[1] = "vulnerability" ] && [ $line[2] = "container" ] && __lw_cmd=(
+            $(lacework --noninteractive $__flagpst $__flagpv $__suba $__subav vulnerability container list-assessments --json | jq -r --arg reg $line[4] --arg repo $line[5] '.[] | select((.image_scan_status == "Success") and (.image_registry == $reg) and (.image_repo == $repo)) | .image_tags[]' )
+        )
     ;;
 esac
 
